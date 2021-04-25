@@ -1,0 +1,560 @@
+$purple: #64377f;
+$yellow: #fef7ce;
+$white: #fff;
+$transparent: rgba(255, 255, 255, 0.001);
+$transition: cubic-bezier(1, 0.885, 0.72, 1);
+
+body {
+  font-family: "Montserrat";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: $yellow;
+  * {
+    box-sizing: border-box;
+  }
+
+  .btn {
+    position: absolute;
+    z-index: 8;
+    width: 30px;
+    height: 30px;
+    left: calc(50% - 15px);
+    top: calc(50% - 15px);
+    margin-top: 250px;
+    transition: 0.2s ease-in-out;
+    margin-left: 350px;
+  }
+  input[type="radio"] {
+    position: absolute;
+    z-index: 8;
+    width: 80px;
+    height: 80px;
+    left: calc(50% - 40px);
+    top: calc(50% - 40px);
+    margin-top: 250px;
+    margin-left: 350px;
+    &:hover {
+      & ~ .btn {
+        box-shadow: 0 0 0 1px #000;
+        &:before {
+          border-top: 5px solid #000;
+          border-right: 5px solid #000;
+        }
+      }
+    }
+  }
+  .btn {
+    box-shadow: 0 0 0 1px #fff;
+    z-index: 999;
+    pointer-events: none;
+    border-radius: 100%;
+    &:before {
+      content: "";
+      position: absolute;
+      width: 25%;
+      height: 25%;
+      border-top: 5px solid #fff;
+      border-right: 5px solid #fff;
+      left: 50%;
+      top: 50%;
+      transform: translateY(calc(-50% - 2.5px)) translateX(-50%) rotate(135deg);
+      transition: 0.2s ease-in-out;
+    }
+  }
+  input {
+    opacity: 0;
+    z-index: 999;
+    @for $i from 1 through 3 {
+      &:first-of-type {
+        &:checked {
+          & ~ #wrap {
+            &:before {
+              transition: 0s;
+            }
+            &:after {
+              transition: 0s;
+            }
+            .slide {
+              &:nth-of-type(2) {
+                opacity: 0;
+              }
+              &:nth-of-type(3) {
+                &:before,
+                .label:before {
+                  transform-origin: top;
+                }
+              }
+            }
+          }
+        }
+      }
+      &:last-of-type {
+        &:checked {
+          z-index: 0;
+          & ~ .btn {
+            &:before {
+              transform: translateY(calc(-50% + 1.5px))
+                translateX(-50%)
+                rotate(135deg)
+                scaleX(-1)
+                scaleY(-1);
+            }
+          }
+          & ~ #wrap {
+            .slide {
+              &:nth-of-type(1) {
+                &:before,
+                .label:before {
+                  transform: translateY(0);
+                }
+                .image {
+                  transform: translateX(-50%) translateY(calc(-50% + 100vh));
+                }
+              }
+            }
+          }
+        }
+      }
+      &:nth-of-type(#{$i}) {
+        z-index: #{10 - $i};
+        &:checked {
+          pointer-events: none;
+          opacity: 0;
+          & + input {
+            z-index: 20;
+          }
+          & ~ #wrap {
+            &:before {
+              transform: translateX(#{($i - 1) * -25%});
+            }
+            &:after {
+              transform: translateY(#{($i - 1) * 25%});
+            }
+            .slide {
+              &:nth-of-type(#{$i}) {
+                .content {
+                  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+                  transition-delay: 0.3s;
+                  p {
+                    &:before {
+                      transform: translateY(0);
+                      transition-delay: 0.45s;
+                      opacity: 1;
+                    }
+                  }
+                }
+                p.classifications {
+                  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+                  transition-delay: 0.2s;
+                }
+                .image {
+                  transition: all 600ms $transition;
+                  transition-delay: 0.1s;
+                  transform: translateX(-50%) translateY(-50%);
+                }
+                .label {
+                  &:before {
+                    transform: translateY(0);
+                  }
+                }
+                &:before {
+                  transform: translateY(0);
+                }
+              }
+              &:nth-of-type(#{$i + 1}) {
+                .content {
+                  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
+                }
+                p.classifications {
+                  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+                }
+                .image {
+                  transform: translateX(-50%) translateY(calc(-50% + 100vh));
+                }
+              }
+              &:nth-of-type(#{$i - 1}) {
+                .image {
+                  transition: 0.3s ease-in-out;
+                }
+                .label {
+                  &:before {
+                    transform: translateY(0);
+                  }
+                }
+                &:before {
+                  transform: translateY(0);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #wrap {
+    min-width: 800px;
+    min-height: 600px;
+    position: relative;
+    background: url(./cyberpunk_character_background_01.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-x: right;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.45);
+
+    .slide {
+      position: absolute;
+      display: grid;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      grid-template-columns: 25% 25% 50%;
+      grid-template-rows: 15% 85%;
+      z-index: 2;
+      overflow: hidden;
+      &:nth-of-type(1) {
+        &:before {
+          background: url(./cyberpunk_character_background_01.jpg);
+          background-size: cover;
+          background-position-x: right;
+          background-repeat: no-repeat;
+        }
+        .image {
+          background-image: url(./judy.png);
+          width: 95%;
+          height: 95%;
+          top: 55%;
+        }
+        .label {
+          &:before {
+            background: $purple;
+          }
+        }
+        .content {
+          h1 {
+            &:before {
+              content: "Judy Alvarez";
+            }
+          }
+          p {
+            span {
+              &:first-of-type {
+                &:after {
+                  content: "Jude";
+                }
+              }
+              &:last-of-type {
+                &:after {
+                  content: "Female";
+                }
+              }
+            }
+          }
+        }
+        p.classifications {
+          span {
+            &:first-of-type {
+              &:after {
+                content: "Alive";
+              }
+            }
+            &:nth-of-type(2) {
+              &:after {
+                content: "2057";
+              }
+            }
+            &:nth-of-type(3) {
+              &:after {
+                content: "Laguna Bend";
+              }
+            }
+            &:nth-of-type(4) {
+              &:after {
+                content: "Night City";
+              }
+            }
+            &:nth-of-type(5) {
+              &:after {
+                content: "Braindance Editor";
+              }
+            }
+            &:nth-of-type(6) {
+              &:after {
+                content: "Clouds (formerly)";
+              }
+            }
+          }
+        }
+      }
+      &:nth-of-type(2) {
+        .image {
+          background-image: url(./johnny-silverhand.png);
+        }
+
+        .content {
+          h1 {
+            &:before {
+              content: "Johnny Silverhand";
+            }
+          }
+          p {
+            span {
+              &:first-of-type {
+                &:after {
+                  content: "Johnny";
+                }
+              }
+              &:last-of-type {
+                &:after {
+                  content: "Male";
+                }
+              }
+            }
+          }
+        }
+        p.classifications {
+          span {
+            &:first-of-type {
+              &:after {
+                content: "Dependent";
+              }
+            }
+            &:nth-of-type(2) {
+              &:after {
+                content: "1988";
+              }
+            }
+            &:nth-of-type(3) {
+              &:after {
+                content: "College Station, Texas";
+              }
+            }
+            &:nth-of-type(4) {
+              &:after {
+                content: "Night City";
+              }
+            }
+            &:nth-of-type(5) {
+              &:after {
+                content: "Ex-soldier";
+              }
+            }
+            &:nth-of-type(6) {
+              &:after {
+                content: "Samurai (formerly)";
+              }
+            }
+          }
+        }
+      }
+      &:nth-of-type(3) {
+        .image {
+          background-image: url(./panam.png);
+        }
+
+        .content {
+          h1 {
+            &:before {
+              content: "Panam Palmer";
+            }
+          }
+          p {
+            span {
+              &:first-of-type {
+                &:after {
+                  content: "Panam";
+                }
+              }
+              &:last-of-type {
+                &:after {
+                  content: "Female";
+                }
+              }
+            }
+          }
+        }
+        p.classifications {
+          span {
+            &:first-of-type {
+              &:after {
+                content: "Alive";
+              }
+            }
+            &:nth-of-type(2) {
+              &:after {
+                content: "2051";
+              }
+            }
+            &:nth-of-type(3) {
+              &:after {
+                content: "Unknown";
+              }
+            }
+            &:nth-of-type(4) {
+              &:after {
+                content: "Badlands";
+              }
+            }
+            &:nth-of-type(5) {
+              &:after {
+                content: "Nomad";
+              }
+            }
+            &:nth-of-type(6) {
+              &:after {
+                content: "Aldecaldos";
+              }
+            }
+          }
+        }
+      }
+      &:before,
+      .label:before {
+        content: "";
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        right: 0;
+        top: 0;
+        z-index: -1;
+        transform: translateY(100%);
+        transform-origin: bottom;
+        transition: all 600ms $transition;
+      }
+      .label {
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 1;
+        position: relative;
+        overflow: hidden;
+        &:after {
+          content: "Characters";
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translateX(-50%) translateY(-50%);
+          font-size: 26px;
+          color: $white;
+          font-weight: 700;
+        }
+        &:before {
+          transition: all 650ms $transition;
+          width: 100%;
+        }
+      }
+
+      .image {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        left: 50%;
+        top: 57%;
+        transform: translateX(-50%) translateY(-100vw);
+        will-change: transform;
+      }
+    }
+    label {
+      color: $white;
+      -webkit-text-stroke: 0.75px rgba(0, 0, 0, 0.25);
+      font-size: 50px;
+      font-weight: 900;
+      position: absolute;
+      margin: 0;
+      top: 275px;
+      width: 50%;
+      left: -125px;
+      transform: rotate(-90deg);
+    }
+    .content {
+      position: absolute;
+      width: 50%;
+      height: auto;
+      right: -4%;
+      transform: translateY(calc(-50% - 25px));
+      top: 50%;
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+      transition: clip-path 0.6s ease-in-out;
+
+      padding: 0 75px 100px 100px;
+      p {
+        color: $white;
+        text-align: left;
+        opacity: 1;
+        width: 60%;
+        font-size: 16px;
+        line-height: 2;
+        position: relative;
+        text-shadow: 0.5px 0.5px black;
+        &:before {
+          content: "";
+          position: absolute;
+          width: 60%;
+          height: 100px;
+          left: calc(-60% - 10px);
+          top: -20px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          filter: invert(1);
+          transform: translateY(50px);
+          opacity: 0;
+          transition: 0.2s ease-in-out;
+        }
+        span {
+          &:after {
+            display: inline-block;
+            clear: left;
+            margin-left: 5px;
+          }
+        }
+      }
+      h1 {
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        font-size: 40px;
+        text-shadow: 2px 2px black;
+        &:before {
+          content: "";
+          display: block;
+          text-align: left;
+          max-width: 100%;
+          font-family: "Poppins", sans-serif;
+          font-weight: 500;
+          color: $white;
+        }
+      }
+    }
+    p.classifications {
+      position: absolute;
+      left: 14.5%;
+      top: 25%;
+      clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+      transition: clip-path 0.3s ease-in-out;
+      color: black;
+    }
+    p {
+      font-size: 16px;
+      margin: 0;
+      line-height: 1.6;
+      opacity: 1;
+      span {
+        display: block;
+        clear: both;
+        font-weight: 700;
+        &:after {
+          display: block;
+          clear: both;
+          font-weight: 500;
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+}
